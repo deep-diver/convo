@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Convo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Include marked.js for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="icon" type="image/png" href="assets/favicon-32x32.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Left Navigation Bar -->
+    <div class="nav-bar" id="navBar">
+      <div class="nav-header">
+        <!-- Hamburger & New Chat will appear here when nav is NOT collapsed -->
+        <button id="hamburgerBtn">
+            <img src="assets/hamburger.svg" alt="Icon" class="svg-icon">  
+        </button>
+        <button class="new-session-btn" id="newSessionBtn">
+            <img src="assets/new-indicator.svg" alt="Icon" class="svg-icon">  
+        </button>
+        <button id="toggleLayoutBtn"><img src="assets/vertical.svg" alt="Icon" class="svg-icon"></button>
+      </div>
+      <!-- <h3>Chat History</h3> -->
+      <ul id="sessionList"></ul>
+      <div id="presetContainer">
+        <div class="preset-header">Model Selection Presets</div>
+        <select id="preset1" class="preset-select tooltip" data-tooltip="Command + Shift + 1">
+          <optgroup label="OpenAI">
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4o-mini">GPT-4o Mini</option>
+          </optgroup>
+          <optgroup label="Anthropic">
+            <option value="claude-3.5-sonnet-latest">Claude 3.5 Sonnet</option>
+            <option value="claude-3.7-sonnet-latest">Claude 3.7 Sonnet</option>
+          </optgroup>
+          <optgroup label="Google">
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
+          </optgroup>
+          <optgroup label="Hugging Face">
+            <option value="huggingface/meta-llama/Llama-3.3-70B-Instruct">Llama 3.3 70B Instruct</option>
+            <option value="huggingface/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">DeepSeek R1 Distill Qwen 32B</option>
+            <option value="huggingface/Qwen/Qwen2.5-72B-Instruct">Qwen 2.5 72B Instruct</option>
+          </optgroup>
+          <optgroup label="Mistral">
+            <option value="mistral-large-latest">Mistral Large</option>
+            <option value="mistral-codestral-latest">CodeStral</option>
+            <option value="mistral-ministral-8b-latest">Ministral 8B</option>
+            <option value="mistral-ministral-3b-latest">Ministral 3B</option>
+          </optgroup>
+        </select>
+      
+        <select id="preset2" class="preset-select tooltip" data-tooltip="Command + Shift + 2">
+          <!-- Use the same options as above -->
+          <optgroup label="OpenAI">
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4o-mini">GPT-4o Mini</option>
+          </optgroup>
+          <optgroup label="Anthropic">
+            <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+            <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
+          </optgroup>
+          <optgroup label="Google">
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
+          </optgroup>
+          <optgroup label="Hugging Face">
+            <option value="huggingface/meta-llama/Llama-3.3-70B-Instruct">Llama 3.3 70B Instruct</option>
+            <option value="huggingface/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">DeepSeek R1 Distill Qwen 32B</option>
+            <option value="huggingface/Qwen/Qwen2.5-72B-Instruct">Qwen 2.5 72B Instruct</option>
+          </optgroup>
+          <optgroup label="Mistral">
+            <option value="mistral-large-latest">Mistral Large</option>
+            <option value="mistral-codestral-latest">CodeStral</option>
+            <option value="mistral-ministral-8b-latest">Ministral 8B</option>
+            <option value="mistral-ministral-3b-latest">Ministral 3B</option>
+          </optgroup>
+        </select>
+      </div>            
+    </div>
+
+    <!-- Main Chat Wrapper -->
+    <div class="chat-wrapper">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <!-- Left portion for hamburger & new chat when collapsed -->
+        <div class="header-left" id="headerLeft"></div>
+
+        <!-- Center portion for the chat title -->
+        <div class="chat-title-controls">
+          <h2 id="chatTitle">Chat Session 1</h2>
+          <button id="editTitleBtn">Edit Title</button>
+        </div>
+
+        <!-- Right portion for turn label -->
+        <div id="turnLabel">Turn: 0 / 0</div>
+      </div>
+
+      <!-- Carousel Wrapper -->
+      <div class="carousel-wrapper" id="carouselWrapper">
+        <button id="prevBtn" class="nav">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="carousel" id="carousel"></div>
+        <button id="nextBtn" class="nav">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Input Section -->
+      <div class="input-container">
+        <div class="button-row">
+            <button id="customBtn1" class="tooltip" data-tooltip="summary">TLDR</button>
+            <button id="customBtn3" class="toggle-btn-summarize tooltip" data-tooltip="toggle summarization"><img src="assets/summarize.svg" alt="Icon" class="svg-icon"></button>
+            <button id="customBtn2" class="tooltip" data-tooltip="settings"><img src="assets/settings.svg" alt="Icon" class="svg-icon"></button>
+            <button id="customBtn4" class="tooltip" data-tooltip="download sards as image"><img src="assets/card-download.svg" alt="Icon" class="svg-icon"></button>
+        </div>
+        <div id="fileAttachments" class="file-attachments"></div>
+        <div class="input-row">
+          <button id="attachBtn" class="attach-button">+</button>
+          <input type="file" id="fileInput" multiple accept="application/pdf">
+          <textarea id="chatInput" placeholder="Ask Anything"></textarea>
+          <button id="sendBtn">
+            <img src="assets/send.svg" alt="Icon" class="svg-icon-non-white">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Overlay -->
+  <div id="summaryOverlay">
+    <div class="summary-header">
+      <span>Chat Summary</span>
+      <div class="summary-header-buttons">
+        <button id="downloadSummary" class="download-summary">Download</button>
+        <button class="close-summary" id="closeSummaryBtn">&times;</button>
+      </div>
+    </div>
+    <div class="summary-content markdown-body" id="summaryContent"></div>
+  </div>
+
+  <!-- Settings Overlay -->
+  <div id="settingsOverlay">
+    <div class="settings-header">
+      <span>Settings</span>
+      <button class="close-settings" id="closeSettingsBtn">&times;</button>
+    </div>
+    <div class="settings-content">
+      <form id="settingsForm">
+        <div class="settings-group">
+          <label for="temperature">Temperature:</label>
+          <input type="range" id="temperature" name="temperature" min="0" max="1" step="0.01">
+          <span id="temperatureValue"></span>
+        </div>
+        <div class="settings-group">
+          <label for="maxTokens">Max Tokens:</label>
+          <input type="number" id="maxTokens" name="maxTokens" min="10" max="2048">
+        </div>
+        <div class="settings-section">
+            <h3>Model Selection</h3>
+            <div class="settings-group">
+              <select id="modelSelect" name="modelSelect">
+                <optgroup label="OpenAI">
+                  <option value="gpt-4o">GPT-4o</option>
+                  <option value="gpt-4o-mini">GPT-4o Mini</option>
+                </optgroup>
+                <optgroup label="Anthropic">
+                  <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                  <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
+                </optgroup>
+                <optgroup label="Google">
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                  <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
+                </optgroup>
+                <optgroup label="Hugging Face">
+                  <option value="huggingface/meta-llama/Llama-3.3-70B-Instruct">Llama 3.3 70B Instruct</option>
+                  <option value="huggingface/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">DeepSeek R1 Distill Qwen 32B</option>
+                  <option value="huggingface/Qwen/Qwen2.5-72B-Instruct">Qwen 2.5 72B Instruct</option>
+                </optgroup>
+                <optgroup label="Mistral">
+                  <option value="mistral-large-latest">Mistral Large</option>
+                  <option value="mistral-codestral-latest">CodeStral</option>
+                  <option value="mistral-ministral-8b-latest">Ministral 8B</option>
+                  <option value="mistral-ministral-3b-latest">Ministral 3B</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>        
+        <div class="settings-group">
+          <label for="persona">Persona:</label>
+          <select id="persona" name="persona">
+            <option value="professional">Professional</option>
+            <option value="friendly">Friendly</option>
+          </select>
+        </div>
+        <button type="button" id="saveSettings" class="save-settings">Save Settings</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-animation">
+      <div class="ripple"></div>
+      <div class="ripple"></div>
+    </div>
+    <p>Generating summary...</p>
+  </div>
+
+  <div id="tooltip" class="custom-tooltip">Styled Tooltip!</div>
+
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>

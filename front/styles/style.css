@@ -1,0 +1,1225 @@
+:root {
+  --primary-color: #4a90e2;
+  --primary-dark: #4178c0;
+  --accent-color: #50e3c2;
+  --background-color: #f9f9f9;
+  --body-bg: #f0f2f5;
+  --text-color: #333;
+  --light-shadow: rgba(0, 0, 0, 0.1);
+  --nav-width: 320px;
+  --border-radius: 12px;
+}
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--body-bg);
+  overflow: hidden;
+  color: var(--text-color);
+}
+
+/* Hamburger Button */
+#hamburgerBtn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  font-size: 1.5em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#hamburgerBtn:hover {
+  background: var(--primary-dark);
+}
+
+.chat-header .chat-hamburger {
+  margin-top: 0;
+  margin-right: 10px;
+}
+
+/* Navigation Header (New placement for New Chat button) */
+.nav-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  transition: all 0.3s ease;
+}
+
+/* Left Navigation Bar */
+.nav-bar {
+  width: var(--nav-width);
+  background: #fff;
+  padding: 24px;
+  box-shadow: 2px 0 16px var(--light-shadow);
+  overflow-y: auto;
+  transition: transform 0.3s ease, width 0.3s ease, padding 0.3s ease;
+  transform: translateX(0);
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-bar.hidden {
+  transform: translateX(-100%);
+  width: 0;
+  padding: 0;
+}
+
+.nav-bar h3 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.nav-bar ul {
+  list-style: none;
+  flex: 1;
+}
+
+.nav-bar li {
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.3s;
+  font-size: 1em;
+}
+
+.nav-bar li.active,
+.nav-bar li:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.session-actions {
+  display: flex;
+}
+
+.session-summary-btn,
+.session-settings-btn {
+  background: rgba(74, 144, 226, 0.15);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.3s;
+  color: inherit;
+}
+
+.session-summary-btn:hover,
+.session-settings-btn:hover {
+  transform: scale(1.1);
+  background: rgba(74, 144, 226, 0.25);
+}
+
+.nav-bar li button.remove-session {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.new-session-btn {
+  padding: 2px 5px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background 0.3s;
+  border-radius: 6px;
+}
+
+.new-session-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* Toggle Layout Button at bottom of nav-bar */
+#toggleLayoutBtn, #hamburgerBtn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 2px 5px;
+  font-size: 1.1em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: auto;
+}
+
+#toggleLayoutBtn:hover {
+  background: var(--primary-dark);
+}
+
+/* Chat Wrapper */
+.chat-wrapper {
+  flex: 1;
+  background: #fff;
+  margin: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 12px 40px var(--light-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 40px 16px 20px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  transition: margin-left 0.3s ease;
+}
+
+/* Left portion of the chat header (hamburger + new chat if collapsed) */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-title-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.chat-header h2 {
+  font-size: 1.5em;
+  color: var(--primary-color);
+  margin: 0;
+  flex-grow: 1;
+  white-space: nowrap;
+}
+
+.chat-header button {
+  background: none;
+  border: none;
+  color: white;
+  background-color: var(--primary-color);
+  font-size: 1em;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.chat-header button:hover {
+  color: var(--primary-dark);
+}
+
+#editTitleBtn {
+  color: var(--primary-color);
+  background: none;
+}
+
+/* Turn Label (now part of the header's flex layout) */
+#turnLabel {
+  background: var(--accent-color);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 1em;
+  white-space: nowrap;
+}
+
+/* Carousel Wrapper */
+.carousel-wrapper {
+  position: relative;
+  flex: 1;
+  background: var(--background-color);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.carousel-wrapper.traditional-mode {
+  overflow-y: auto;
+}
+
+/* Carousel */
+.carousel {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+
+.carousel.traditional {
+  flex-direction: column;
+  height: auto;
+  transform: none !important;
+}
+
+/* Card */
+.card {
+  min-width: 100%;
+  height: 100%;
+  padding: 40px 70px 40px 70px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.carousel.traditional .card {
+  margin-bottom: 20px;
+  padding: 20px 40px;
+  height: auto;
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Message Bubbles (Order: User then AI; rendered as Markdown) */
+.message {
+  padding: 14px 20px;
+  border-radius: 24px;
+  font-size: 1em;
+  line-height: 1.6;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 3px 10px var(--light-shadow);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.user {
+  background: #e9f1ff;
+  border: 1px solid #cbdffb;
+  align-self: flex-end;
+}
+
+.ai {
+  background: #fff4e6;
+  border: 1px solid #ffe0b2;
+  align-self: flex-start;
+}
+
+.message-text {
+  display: block;
+  max-height: 80px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.message.expanded .message-text {
+  max-height: none;
+}
+
+/* Ensure full AI message text is visible */
+.ai .message-text {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.ai .ai-status {
+  margin-top: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 0.7em;
+  color: #666;
+  text-align: right;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 0.85em;
+  margin-top: 6px;
+  padding: 0;
+}
+
+.vertical-file-list {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.file-item-vertical {
+  background: #0500e624;
+  padding: 6px 10px;
+  border-radius: var(--border-radius);
+  font-size: 0.5em;
+  font-style: italic;
+}
+
+/* Navigation Buttons */
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0);
+  /* backdrop-filter: blur(4px); */
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.nav:hover {
+  transform: translateY(-50%) scale(1.1);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.nav:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+#prevBtn {
+  left: 1px;
+}
+
+#nextBtn {
+  right: 1px;
+}
+
+.carousel.traditional~.nav {
+  display: none;
+}
+
+/* Input Section */
+.input-container {
+  padding: 20px;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-attachments {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+}
+
+.file-attachments::-webkit-scrollbar {
+  height: 6px;
+}
+
+.file-attachments::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.file-attachments::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.file-attachments::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.file-item {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+
+.file-item button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  padding: 6px 12px;
+}
+
+.attach-button {
+  background: none;
+  border: none;
+  font-size: 1.4em;
+  cursor: pointer;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.attach-button:hover {
+  background: #f0f0f0;
+}
+
+#fileInput {
+  display: none;
+}
+
+#chatInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: scroll;
+  font-size: 1em;
+  height: 36px;
+  /* line-height: 36px; */
+  margin: 0;
+  padding: 0 8px;
+  padding: 10px;
+  max-height: 100px;
+}
+
+#chatInput::placeholder {
+  color: #999;
+}
+
+#sendBtn svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+#sendBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  transition: background 0.3s;
+}
+
+#sendBtn:hover {
+  background: #f0f0f0;
+}
+
+/* Redesigned Summary Overlay with Max Height */
+#summaryOverlay {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 80%;
+  /* max-width: 600px;  Wider than settings panel */
+  min-height: 30vh;
+  /* Limit to half the viewport height */
+  max-height: 60vh;
+  /* Limit to half the viewport height */
+  background: linear-gradient(135deg, #ffffff, #f7f7f7);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* padding-bottom: 100px; */
+}
+
+#summaryOverlay.active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #4a90e2, #4178c0);
+  color: #fff;
+  font-size: 1.5em;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-header span {
+  font-weight: 500;
+}
+
+.summary-header-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.download-summary {
+  background: #fff;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.download-summary:hover {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.close-summary {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8em;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.summary-content {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+  overflow-y: auto;
+  /* Scrollbar appears when content exceeds available height */
+  flex: 1;
+  font-size: 1em;
+  color: #333;
+  background: #fff;
+}
+
+/* Redesigned Settings Overlay */
+#settingsOverlay {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 90%;
+  max-width: 500px;
+  background: linear-gradient(135deg, #ffffff, #f7f7f7);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 50px;
+}
+
+#settingsOverlay.active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #4a90e2, #4178c0);
+  color: #fff;
+  font-size: 1.5em;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.settings-header span {
+  font-weight: 500;
+}
+
+.close-settings {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8em;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.settings-content {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  font-size: 1em;
+  color: #333;
+  background: #fff;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.settings-group label {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.settings-group input[type="range"],
+.settings-group input[type="number"],
+.settings-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  width: 100%;
+  font-size: 1em;
+  background: #fefefe;
+  transition: border 0.3s;
+}
+
+.settings-group input[type="range"]:focus,
+.settings-group input[type="number"]:focus,
+.settings-group select:focus {
+  border-color: #4a90e2;
+}
+
+.save-settings {
+  background: linear-gradient(135deg, #4a90e2, #4178c0);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-settings:hover {
+  background: linear-gradient(135deg, #4178c0, #4a90e2);
+}
+
+@media (max-width: 600px) {
+  .nav-bar {
+    display: none;
+  }
+
+  .chat-wrapper {
+    margin: 0;
+  }
+
+  .message {
+    font-size: 0.95em;
+    max-width: 80%;
+  }
+
+  .nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+  }
+
+  .card {
+    padding: 80px 20px 20px 20px;
+  }
+
+  .input-container {
+    padding: 15px;
+  }
+
+  .input-row {
+    flex-direction: row;
+  }
+
+  .input-container button {
+    width: auto;
+  }
+
+  #summaryOverlay,
+  #settingsOverlay {
+    width: 80%;
+  }
+}
+
+.svg-icon {
+  width: 28px;
+  /* Adjust as needed */
+  height: 28px;
+  /* Adjust as needed */
+  filter: invert(100%) brightness(300%);
+}
+
+.svg-icon-non-white {
+  width: 22px;
+  /* Adjust as needed */
+  height: 22px;
+  /* Adjust as needed */
+  /* filter: invert(100%) brightness(300%);      */
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  /* Optional: adjust spacing between buttons */
+  margin-bottom: 10px;
+  /* Space between buttons and the rest of the input area */
+}
+
+.button-row button {
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button-row button:hover {
+  background: var(--primary-dark);
+}
+
+#customBtn2 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 0.98em;
+}
+
+#customBtn2 img {
+  width: 24px;
+  height: 24px;
+}
+
+#customBtn3 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 0.98em;
+}
+
+#customBtn3 img {
+  width: 24px;
+  height: 24px;
+}
+
+#customBtn4 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 0.98em;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#customBtn4.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+#customBtn4 img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Markdown */
+.markdown-body {
+  font-size: 1em;
+  line-height: 1.5;
+  white-space: normal;
+  /* Ensure paragraphs and lists break onto new lines */
+}
+
+.markdown-body p {
+  margin: 0.75em 0;
+  /* Add vertical space between paragraphs */
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0.75em 0;
+  padding-left: 1.5em;
+  /* Indent bullets/numbers */
+}
+
+.markdown-body li {
+  margin: 0.3em 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+/* Keep custom layout/styling but let hljs control colors */
+.markdown-body pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px;
+  border-radius: 6px;
+  /* Remove background-color and color so hljs can apply its own */
+}
+
+.markdown-body pre code.hljs {
+  /* Customize only specific properties */
+  padding: 10px;
+  border-radius: 6px;
+  /* Let the theme dictate the background and text colors */
+}
+
+.blinking-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1em;
+  background-color: currentColor;
+  margin-left: 2px;
+  animation: blink 0.5s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.markdown-body pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px;
+  border-radius: 6px;
+  /* Let the highlight.js theme control the background and colors */
+  position: relative;
+  /* Ensure the copy button is positioned correctly */
+}
+
+.copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.copy-button:hover {
+  opacity: 1;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  z-index: 1000;
+}
+
+.loading-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.loading-animation {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.loading-animation .ripple {
+  position: absolute;
+  border: 4px solid #4a90e2;
+  /* Adjust the color to match your theme */
+  opacity: 1;
+  border-radius: 50%;
+  animation: ripple 1.5s cubic-bezier(0.66, 0, 0, 1) infinite;
+}
+
+.loading-animation .ripple:nth-child(2) {
+  animation-delay: -0.75s;
+}
+
+@keyframes ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  100% {
+    top: 0;
+    left: 0;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
+
+/* Container for the toggle switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 34px;
+  margin-left: 10px;
+}
+
+/* Hide the default checkbox */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider (background) */
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: background-color 0.4s, box-shadow 0.4s;
+  border-radius: 34px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* The knob */
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  background-color: #fff;
+  transition: transform 0.4s, box-shadow 0.4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* When the checkbox is checked */
+.toggle-switch input:checked+.toggle-slider {
+  background-color: #4a90e2;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked+.toggle-slider:before {
+  transform: translateX(26px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Optional: styling for the label text */
+.toggle-label {
+  font-size: 1em;
+  vertical-align: middle;
+  color: #333;
+}
+
+.ai-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.8em;
+  color: #666;
+}
+
+.toggle-btn-summarize {
+  padding: 8px 16px;
+  background-color: #ccc !important;
+  /* Dim color when off */
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn-summarize.active {
+  background-color: #4a90e2 !important;
+  /* Vivid color when active */
+}
+
+/* Model Presets */
+/* Container for presets */
+#presetContainer {
+  flex-shrink: 0;
+  padding: 10px 24px;
+  border-top: 1px solid #ddd;
+  background-color: #fff;
+}
+
+/* Improved preset select styling */
+#presetContainer {
+  position: absolute;
+  bottom: 20px;
+  /* same as nav-bar padding */
+  left: 20px;
+  right: 20px;
+  background: #fff;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+/* Enhanced preset select styling */
+.preset-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+
+.preset-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.preset-select.active {
+  background-color: #4a90e2;
+  color: #fff;
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+  outline: none;
+}
+
+#sessionList {
+  overflow-y: auto;
+  padding-bottom: 150px;
+  /* Adjust this value as needed */
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+}
+
+.tooltip:hover::after {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip Base Styles */
+#tooltip {
+  position: absolute;
+  background: black;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0; /* Initially hidden */
+  transform: translateX(-50%) translateY(10px); /* Start lower */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none; /* Prevent it from interfering */
+}
+
+#tooltip.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0); /* Move up */
+}
