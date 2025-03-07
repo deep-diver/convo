@@ -1,9 +1,8 @@
-import json
-import httpx
+
+import os
 import datetime
 
 from fastapi import FastAPI, Depends, Request, HTTPException
-from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -190,6 +189,56 @@ async def update_summarization_enable(request: Request, db: Session = Depends(ge
     db.commit()
     db.refresh(session)
     return session_to_dict(session)
+
+@app.get("/list_models")
+def list_models():
+    available_models = {
+        "openai": [],
+        "google": [],
+        "mistral": [],
+        "huggingface": [],
+        "anthropic": []
+    }
+
+    # Check OpenAI models
+    if os.environ.get("OPENAI_API_KEY"):
+        available_models["OpenAI"] = [
+            {"code": "gpt-4o", "name": "GPT-4o"},
+            {"code": "gpt-4o-mini", "name": "GPT-4o Mini"}
+        ]
+
+    # Check Google models  
+    if os.environ.get("GOOGLE_API_KEY"):
+        available_models["Google"] = [
+            {"code": "gemini-2.0-flash", "name": "Gemini 2.0 Flash"},
+            {"code": "gemini-2.0-flash-lite", "name": "Gemini 2.0 Flash Lite"}
+        ]
+
+    # Check Mistral models
+    if os.environ.get("MISTRAL_API_KEY"):
+        available_models["Mistral"] = [
+            {"code": "mistral-large-latest", "name": "Mistral Large"},
+            {"code": "mistral-codestral-latest", "name": "Codestral"},
+            {"code": "mistral-ministral-8b-latest", "name": "Ministral 8B"},
+            {"code": "mistral-ministral-3b-latest", "name": "Ministral 3B"}
+        ]
+
+    # Check Huggingface models
+    if os.environ.get("HUGGINGFACE_TOKEN"):
+        available_models["Hugging Face"] = [
+            {"code": "huggingface/meta-llama/Llama-3.3-70B-Instruct", "name": "Llama 3.3 70B Instruct"},
+            {"code": "huggingface/Qwen/Qwen2.5-72B-Instruct", "name": "Qwen 2.5 72B Instruct"},
+            {"code": "huggingface/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B", "name": "DeepSeek R1 Distilled Qwnen 32B"}
+        ]
+
+    # Check Anthropic models
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        available_models["Anthropic"] = [
+            {"code": "claude-3.5-sonnet-latest", "name": "Claude 3.5 Sonnet"},
+            {"code": "claude-3.7-sonnet-latest", "name": "Claude 3.7 Sonnet"}
+        ]
+
+    return available_models
 
 if __name__ == "__main__":
     import uvicorn

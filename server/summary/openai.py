@@ -48,7 +48,7 @@ async def openai_summary(request: Request):
     finally:
         db.close()
 
-    with open("../../configs/prompts.toml", "rb") as f:
+    with open("./configs/prompts.toml", "rb") as f:
         prompts = tomli.load(f)
 
     prompt = Template(prompts["summarization"]["prompt"])
