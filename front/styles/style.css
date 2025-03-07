@@ -24,22 +24,6 @@ body {
   color: var(--text-color);
 }
 
-/* Hamburger Button */
-#hamburgerBtn {
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  font-size: 1.5em;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-#hamburgerBtn:hover {
-  background: var(--primary-dark);
-}
-
 .chat-header .chat-hamburger {
   margin-top: 0;
   margin-right: 10px;
@@ -158,7 +142,7 @@ body {
 }
 
 /* Toggle Layout Button at bottom of nav-bar */
-#toggleLayoutBtn, #hamburgerBtn {
+#toggleLayoutBtn, #hamburgerBtn, #newSessionBtn {
   background: var(--primary-color);
   color: #fff;
   border: none;
@@ -170,8 +154,12 @@ body {
   margin-top: auto;
 }
 
-#toggleLayoutBtn:hover {
+#toggleLayoutBtn:hover, #hamburgerBtn:hover, #newSessionBtn:hover {
   background: var(--primary-dark);
+}
+
+#hamburgerBtn img, #newSessionBtn img, #toggleLayoutBtn img {
+  padding: 2px;
 }
 
 /* Chat Wrapper */
@@ -1222,4 +1210,11 @@ body {
 #tooltip.visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0); /* Move up */
+}
+
+option.mistral {
+  background-image: url('assets/mistral.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 20px;  
 }

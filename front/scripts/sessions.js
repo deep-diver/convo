@@ -2,6 +2,8 @@
 import { formatTimestamp } from './utils.js';
 import { updateLayout } from './navigation.js';
 import { setPresets } from './presets.js';
+import { determineSvgFile } from './utils.js';
+
 export let sessions = [];
 export let currentSessionIndex = 0;
 export let currentCardIndex = 0;
@@ -184,6 +186,7 @@ export function renderCurrentSession() {
 
     console.log("message", message);
 
+    const svg_file = determineSvgFile(message.model);
     card.innerHTML = `
       <div class="conversation">
         <div class="message user">
@@ -193,7 +196,7 @@ export function renderCurrentSession() {
         <div class="message ai">
           <div class="message-text markdown-body">${marked.parse(message.aiResponse)}</div>
           <div class="ai-meta">
-            <span class="ai-model">${message.model}</span>
+            <span class="ai-model"><img src="${svg_file}" width="14" height="14" style="vertical-align: middle; margin-right: 5px;" alt="icon">${message.model}</span>
             <span class="ai-timestamp"> @${formatTimestamp(message.timestamp)}</span>
           </div>
         </div>

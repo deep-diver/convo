@@ -112,64 +112,73 @@ downloadCardBtn.addEventListener('click', () => {
   const cards = document.querySelectorAll('.card');
   const zip = new JSZip();
   const promises = [];
-  
+
   cards.forEach((card, index) => {
-    // Wrap the capture process in a Promise
+    const title = document.querySelector('.chat-header'); // Assuming each card has a title
+
     const promise = new Promise((resolve, reject) => {
-      // Clone the card so we can modify its styles without affecting the original
-      const clone = card.cloneNode(true);
-      
-      // Adjust clone's style to ensure all content is visible off-screen
-      clone.style.position = 'absolute';
-      clone.style.top = '-9999px';
-      clone.style.left = '-9999px';
-      clone.style.overflow = 'visible';
-      clone.style.width = card.scrollWidth + 'px';
-      clone.style.height = card.scrollHeight + 'px';
-      
-      // Append the clone to the document
-      document.body.appendChild(clone);
-      
-      // Capture the clone using html2canvas
-      html2canvas(clone, {
-        width: clone.scrollWidth,
-        height: clone.scrollHeight,
+      // Create a wrapper div to hold both elements
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'absolute';
+      wrapper.style.top = '-9999px';
+      wrapper.style.left = '-9999px';
+      wrapper.style.display = 'flex'; // Align elements side by side (use 'block' for stacking)
+      wrapper.style.flexDirection = 'column'; // Stack elements vertically
+      wrapper.style.background = 'white'; // Ensure white background
+
+      // Clone and append the title (if exists)
+      if (title) {
+        const clonedTitle = title.cloneNode(true);
+        clonedTitle.style.width = title.scrollWidth + 'px';
+        wrapper.appendChild(clonedTitle);
+      }
+
+      // Clone and append the card
+      const clonedCard = card.cloneNode(true);
+      clonedCard.style.width = card.scrollWidth + 'px';
+      wrapper.appendChild(clonedCard);
+
+      // Append the wrapper to the document
+      document.body.appendChild(wrapper);
+
+      // Capture the wrapper using html2canvas
+      html2canvas(wrapper, {
+        width: wrapper.scrollWidth,
+        height: wrapper.scrollHeight,
         scrollX: 0,
         scrollY: 0
       }).then(canvas => {
-        // Convert canvas to data URL
         const imgData = canvas.toDataURL('image/png');
-        // Remove the data URL prefix to get only the base64 encoded string
         const base64Data = imgData.split(',')[1];
-        
-        // Add the image to the zip file with base64 encoding
+
         zip.file(`card-${index}.png`, base64Data, { base64: true });
-        
-        // Remove the clone from the DOM
-        document.body.removeChild(clone);
+
+        // Remove the wrapper from the DOM
+        document.body.removeChild(wrapper);
         resolve();
       }).catch(error => {
-        console.error('Error capturing card:', error);
-        document.body.removeChild(clone);
+        console.error('Error capturing combined elements:', error);
+        document.body.removeChild(wrapper);
         reject(error);
       });
     });
-    
+
     promises.push(promise);
   });
-  
-  // When all cards have been processed, generate and download the zip
+
+  // Generate and download the zip
   Promise.all(promises)
     .then(() => {
       zip.generateAsync({ type: 'blob' })
-        .then(function(content) {
+        .then(content => {
           saveAs(content, sessions[currentSessionIndex].title + '-cards.zip');
         });
     })
     .catch(error => {
       console.error('Error generating zip:', error);
-    });  
-})
+    });
+});
+
 
 closeSettingsBtn.addEventListener('click', () => {
   settingsOverlay.classList.remove('active');
@@ -239,6 +248,25 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+// document.addEventListener('wheel', (e) => {
+//   // Check if the horizontal scroll (deltaX) is more significant than vertical scroll (deltaY)
+//   const chatInput = document.getElementById('chatInput');
+//   if (document.activeElement !== chatInput) {
+//     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+//       if (e.deltaX < 0 && getCurrentCardIndex() > 0) {
+//         setCurrentCardIndex(getCurrentCardIndex() - 1);
+//         console.log('Scrolled left');
+//       } else if (e.deltaX > 0) {
+//         const cards = document.querySelectorAll('.card');
+//         if (getCurrentCardIndex() < cards.length - 1) {
+//           setCurrentCardIndex(getCurrentCardIndex() + 1);
+//           console.log('Scrolled right');
+//         }
+//       }
+//     }
+//   }
+// });
 
 // Auto-dismiss overlays when clicking outside
 document.addEventListener('click', (e) => {

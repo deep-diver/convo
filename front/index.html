@@ -24,16 +24,18 @@
         <button id="hamburgerBtn">
             <img src="assets/hamburger.svg" alt="Icon" class="svg-icon">  
         </button>
-        <button class="new-session-btn" id="newSessionBtn">
+        <button id="newSessionBtn" class="new-session-btn">
             <img src="assets/new-indicator.svg" alt="Icon" class="svg-icon">  
         </button>
-        <button id="toggleLayoutBtn"><img src="assets/vertical.svg" alt="Icon" class="svg-icon"></button>
+        <button id="toggleLayoutBtn">
+          <img src="assets/vertical.svg" alt="Icon" class="svg-icon">
+        </button>
       </div>
       <!-- <h3>Chat History</h3> -->
       <ul id="sessionList"></ul>
       <div id="presetContainer">
         <div class="preset-header">Model Selection Presets</div>
-        <select id="preset1" class="preset-select tooltip" data-tooltip="Command + Shift + 1">
+        <select id="preset1" class="preset-select">
           <optgroup label="OpenAI">
             <option value="gpt-4o">GPT-4o</option>
             <option value="gpt-4o-mini">GPT-4o Mini</option>
@@ -59,15 +61,15 @@
           </optgroup>
         </select>
       
-        <select id="preset2" class="preset-select tooltip" data-tooltip="Command + Shift + 2">
+        <select id="preset2" class="preset-select">
           <!-- Use the same options as above -->
           <optgroup label="OpenAI">
             <option value="gpt-4o">GPT-4o</option>
             <option value="gpt-4o-mini">GPT-4o Mini</option>
           </optgroup>
           <optgroup label="Anthropic">
-            <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-            <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
+            <option value="claude-3.5-sonnet-latest">Claude 3.5 Sonnet</option>
+            <option value="claude-3.7-sonnet-latest">Claude 3.7 Sonnet</option>
           </optgroup>
           <optgroup label="Google">
             <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
@@ -124,9 +126,15 @@
       <div class="input-container">
         <div class="button-row">
             <button id="customBtn1" class="tooltip" data-tooltip="summary">TLDR</button>
-            <button id="customBtn3" class="toggle-btn-summarize tooltip" data-tooltip="toggle summarization"><img src="assets/summarize.svg" alt="Icon" class="svg-icon"></button>
-            <button id="customBtn2" class="tooltip" data-tooltip="settings"><img src="assets/settings.svg" alt="Icon" class="svg-icon"></button>
-            <button id="customBtn4" class="tooltip" data-tooltip="download sards as image"><img src="assets/card-download.svg" alt="Icon" class="svg-icon"></button>
+            <button id="customBtn3" class="toggle-btn-summarize tooltip" data-tooltip="toggle summarization">
+              <img src="assets/summarize.svg" alt="Icon" class="svg-icon">
+            </button>
+            <button id="customBtn2" class="tooltip" data-tooltip="settings">
+              <img src="assets/settings.svg" alt="Icon" class="svg-icon">
+            </button>
+            <button id="customBtn4" class="tooltip" data-tooltip="download cards as image">
+              <img src="assets/card-download.svg" alt="Icon" class="svg-icon">
+            </button>
         </div>
         <div id="fileAttachments" class="file-attachments"></div>
         <div class="input-row">
@@ -179,8 +187,8 @@
                   <option value="gpt-4o-mini">GPT-4o Mini</option>
                 </optgroup>
                 <optgroup label="Anthropic">
-                  <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-                  <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
+                  <option value="claude-3.5-sonnet-latest">Claude 3.5 Sonnet</option>
+                  <option value="claude-3.7-sonnet-latest">Claude 3.7 Sonnet</option>
                 </optgroup>
                 <optgroup label="Google">
                   <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>

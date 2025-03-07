@@ -20,6 +20,54 @@ window.renderCurrentSession = renderCurrentSession;
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        const models = await fetch('http://127.0.0.1:8000/list_models');
+        const modelsData = await models.json();
+        console.log("Models:", modelsData);
+
+        // Clear existing options
+        const preset1Select = document.getElementById('preset1');
+        const preset2Select = document.getElementById('preset2');
+        const modelSelect = document.getElementById('modelSelect');
+
+        modelSelect.innerHTML = '';
+        preset1Select.innerHTML = '';
+        preset2Select.innerHTML = '';
+
+        // Add options for each provider's models
+        for (const [provider, models] of Object.entries(modelsData)) {
+            if (models.length > 0) {
+                const group1 = document.createElement('optgroup');
+                const group2 = document.createElement('optgroup');
+                const group3 = document.createElement('optgroup');
+                group1.label = provider;
+                group2.label = provider;
+                group3.label = provider;
+
+                models.forEach(model => {
+                    const option1 = document.createElement('option');
+                    const option2 = document.createElement('option');
+                    const option3 = document.createElement('option');
+                    option1.value = model.code;
+                    option2.value = model.code;
+                    option3.value = model.code;
+                    option1.textContent = model.name;
+                    option2.textContent = model.name;
+                    option3.textContent = model.name;
+                    group1.appendChild(option1);
+                    group2.appendChild(option2);
+                    group3.appendChild(option3);
+                });
+
+                preset1Select.appendChild(group1);
+                preset2Select.appendChild(group2);
+                modelSelect.appendChild(group3);
+            }
+        }
+    } catch (err) {
+        console.error("Error loading models:", err);
+    }
+
+    try {
         const response = await fetch('http://127.0.0.1:8000/sessions');
         const data = await response.json();
         console.log("Recovered sessions:", data.sessions);
@@ -69,14 +117,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const preset1 = document.getElementById('preset1');
 const preset2 = document.getElementById('preset2');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const newSessionBtn = document.getElementById('newSessionBtn');
+const toggleLayoutBtn = document.getElementById('toggleLayoutBtn');
+
 const tooltip = document.getElementById('tooltip');
 
-function showTooltip(target, tooltipText) {
+function showTooltip(target, tooltipText, top, yOffset) {
     const rect = target.getBoundingClientRect(); // Get accurate position
     tooltip.style.visibility = 'visible';
     tooltip.style.position = 'absolute'; // Ensure it's positioned correctly
-    tooltip.style.top = `${window.scrollY + rect.top - tooltip.offsetHeight - 5}px`; // Above the element
-    tooltip.style.left = `${window.scrollX + rect.left + 100}px`; // Align left with the element
+    if (top) {
+        tooltip.style.top = `${window.scrollY + rect.top - tooltip.offsetHeight - 5}px`; // Above the element
+    } else {
+        tooltip.style.top = `${window.scrollY + rect.top + rect.height + 5}px`; // Below the element
+    }
+    tooltip.style.left = `${window.scrollX + rect.left + yOffset}px`; // Align left with the element
     tooltip.textContent = tooltipText;
     tooltip.classList.add('visible'); // Add animation class
 }
@@ -86,8 +142,17 @@ function hideTooltip() {
     tooltip.style.visibility = 'hidden';
 }
 
-preset1.addEventListener('mouseenter', () => showTooltip(preset1, "⌘ + Shift + 1"));
+preset1.addEventListener('mouseenter', () => showTooltip(preset1, "⌘ + Shift + 1", true, 50));
 preset1.addEventListener('mouseleave', hideTooltip);
 
-preset2.addEventListener('mouseenter', () => showTooltip(preset2, "⌘ + Shift + 2"));
+preset2.addEventListener('mouseenter', () => showTooltip(preset2, "⌘ + Shift + 2", true, 50));
 preset2.addEventListener('mouseleave', hideTooltip);
+
+hamburgerBtn.addEventListener('mouseenter', () => showTooltip(hamburgerBtn, "toggle collapsed sidebar", false, 100));
+hamburgerBtn.addEventListener('mouseleave', hideTooltip);
+
+newSessionBtn.addEventListener('mouseenter', () => showTooltip(newSessionBtn, "new chat", false, 50));
+newSessionBtn.addEventListener('mouseleave', hideTooltip);
+
+toggleLayoutBtn.addEventListener('mouseenter', () => showTooltip(toggleLayoutBtn, "toggle layout", false, 60));
+toggleLayoutBtn.addEventListener('mouseleave', hideTooltip);
