@@ -13,7 +13,8 @@ from stream import (
     anthropic as anthropic_stream, 
     google as google_stream,
     huggingface as huggingface_stream, 
-    mistral as mistral_stream
+    mistral as mistral_stream,
+    upstage as upstage_stream
 )
 from summary import (
     openai as openai_summary, 
@@ -34,6 +35,23 @@ def get_db():
     finally:
         db.close()
 
+def get_default_session():
+    new_session = ChatSession(
+        sessionId=str(datetime.datetime.utcnow().timestamp()),  # Or use UUID for more uniqueness.
+        name="Chat Session 1",
+        title="Chat Session 1",
+        summary="# Chat Summary\n\nThis is the default summary for Chat Session 1.",
+        temperature=0.7,
+        maxTokens=1024,
+        persona="professional",
+        model="gpt-4o-mini",
+        summarizingModel="gpt-4o-mini",
+        modelPreset1="gpt-4o-mini",
+        modelPreset2="gpt-4o-mini",
+        enableSummarization=False,
+    )    
+    return new_session
+
 def session_to_dict(session: ChatSession):
     return {
         "id": session.id,
@@ -45,6 +63,7 @@ def session_to_dict(session: ChatSession):
         "maxTokens": session.maxTokens,
         "persona": session.persona,
         "model": session.model,
+        "summarizingModel": session.summarizingModel,
         "enableSummarization": session.enableSummarization,
         "createdAt": session.createdAt.isoformat() if session.createdAt else None,
         "updatedAt": session.updatedAt.isoformat() if session.updatedAt else None,
@@ -72,6 +91,7 @@ app.include_router(anthropic_stream.router)
 app.include_router(google_stream.router)
 app.include_router(huggingface_stream.router)
 app.include_router(mistral_stream.router)
+app.include_router(upstage_stream.router)
 
 app.include_router(openai_summary.router)
 app.include_router(google_summary.router)
@@ -91,21 +111,8 @@ def get_sessions(db: Session = Depends(get_db)):
     sessions_data = db.query(ChatSession).all()
     # If no sessions exist, create a default one.
     if not sessions_data:
-        print("No sessions found, creating a default one")
-        print("----------------------------------------")
-        new_session = ChatSession(
-            sessionId=str(datetime.datetime.utcnow().timestamp()),  # Or use UUID for more uniqueness.
-            name="Chat Session 1",
-            title="Chat Session 1",
-            summary="# Chat Summary\n\nThis is the default summary for Chat Session 1.",
-            temperature=0.7,
-            maxTokens=1024,
-            persona="professional",
-            model="gpt-4o-mini",
-            modelPreset1="gpt-4o-mini",
-            modelPreset2="gpt-4o-mini",
-            enableSummarization=False,
-        )
+        new_session = get_default_session()
+        
         db.add(new_session)
         db.commit()
         db.refresh(new_session)
@@ -114,19 +121,7 @@ def get_sessions(db: Session = Depends(get_db)):
 
 @app.post("/add_session")
 def add_session(db: Session = Depends(get_db)):
-    new_session = ChatSession(
-        sessionId=str(datetime.datetime.utcnow().timestamp()),
-        name=f"Chat Session {db.query(ChatSession).count() + 1}",
-        title=f"Chat Session {db.query(ChatSession).count() + 1}",
-        summary="# Chat Summary\n\nThis is a new chat session.",
-        temperature=0.7,
-        maxTokens=1024,
-        persona="professional",
-        model="gpt-4o-mini",
-        modelPreset1="gpt-4o-mini",
-        modelPreset2="gpt-4o-mini",
-        enableSummarization=False,
-    )
+    new_session = get_default_session()
     db.add(new_session)
     db.commit()
     db.refresh(new_session)
@@ -139,6 +134,13 @@ async def update_model_preset(request: Request, db: Session = Depends(get_db)):
     session = db.query(ChatSession).filter(ChatSession.sessionId == session_id).first()
     session.modelPreset1 = body.get("model_preset1")
     session.modelPreset2 = body.get("model_preset2")
+    selectedModelPreset = body.get("selected_preset_idx")
+    if selectedModelPreset == 1:
+        session.model = session.modelPreset1
+        print("modelPreset1", session.modelPreset1)
+    elif selectedModelPreset == 2:
+        session.model = session.modelPreset2
+        print("modelPreset2", session.modelPreset2)
     db.commit()
     db.refresh(session)
     return session_to_dict(session)
@@ -150,23 +152,10 @@ def remove_session(request: Request, db: Session = Depends(get_db)):
     db.delete(session)
     db.commit()
 
-    # Check if any sessions remain
     remaining_sessions = db.query(ChatSession).count()
     if remaining_sessions == 0:
-        # Create new default session
-        new_session = ChatSession(
-            sessionId=str(datetime.datetime.utcnow().timestamp()),
-            name="Chat Session 1",
-            title="Chat Session 1", 
-            summary="# Chat Summary\n\nThis is a new chat session.",
-            temperature=0.7,
-            maxTokens=1024,
-            persona="professional",
-            model="gpt-4o-mini",
-            modelPreset1="gpt-4o-mini",
-            modelPreset2="gpt-4o-mini",
-            enableSummarization=False
-        )
+        new_session = get_default_session()
+        
         db.add(new_session)
         db.commit()
         db.refresh(new_session)
@@ -216,7 +205,7 @@ def list_models():
 
     # Check Mistral models
     if os.environ.get("MISTRAL_API_KEY"):
-        available_models["Mistral"] = [
+        available_models["Mistral.AI"] = [
             {"code": "mistral-large-latest", "name": "Mistral Large"},
             {"code": "mistral-codestral-latest", "name": "Codestral"},
             {"code": "mistral-ministral-8b-latest", "name": "Ministral 8B"},
@@ -237,9 +226,42 @@ def list_models():
             {"code": "claude-3.5-sonnet-latest", "name": "Claude 3.5 Sonnet"},
             {"code": "claude-3.7-sonnet-latest", "name": "Claude 3.7 Sonnet"}
         ]
+        
+    if os.environ.get("UPSTAGE_API_KEY"):
+        available_models["Upstage"] = [
+            {"code": "upstage-solar-mini", "name": "Solar Mini"},
+            {"code": "upstage-solar-pro", "name": "Solar Pro"}
+        ]
 
     return available_models
 
+@app.post("/update_session_settings")
+async def update_session_settings(request: Request, db: Session = Depends(get_db)):
+    session_id = request.headers.get("X-Session-ID")
+    body = await request.json()
+    session_settings = body.get("session_settings")
+    print("session_settings", session_settings)
+    session = db.query(ChatSession).filter(ChatSession.sessionId == session_id).first()
+    session.modelPreset1 = session_settings.get("modelPreset1")
+    session.modelPreset2 = session_settings.get("modelPreset2")
+    session.model = session_settings.get("model")
+    session.summarizingModel = session_settings.get("summarizingModel")
+    # session.ocrModel = session_settings.get("ocrModel")
+    session.temperature = session_settings.get("temperature")
+    session.maxTokens = session_settings.get("maxTokens")
+    session.persona = session_settings.get("persona")
+    db.commit()
+    db.refresh(session)
+
+@app.post("/update_title")
+async def update_title(request: Request, db: Session = Depends(get_db)):
+    session_id = request.headers.get("X-Session-ID")
+    body = await request.json()
+    session = db.query(ChatSession).filter(ChatSession.sessionId == session_id).first()
+    session.title = body.get("title")
+    db.commit()
+    db.refresh(session)
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

@@ -1218,3 +1218,23 @@ option.mistral {
   background-position: left center;
   padding-left: 20px;  
 }
+
+#help-message {
+  visibility: hidden;
+  position: fixed;
+  background: black;
+  color: white;
+  border-radius: 20px;
+  font-size: 13pt;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0%;
+  padding: 30px;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#help-message.active {
+  visibility: visible;
+  opacity: 50%;
+}

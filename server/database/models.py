@@ -15,10 +15,16 @@ class Session(Base):
     temperature = Column(Float, default=0.7)
     maxTokens = Column(Integer, default=1024)
     persona = Column(String, default="professional")
+    ocrModel = Column(String, default="gpt-4o-mini")
     model = Column(String, default="gpt-4o-mini")
+    summarizingModel = Column(String, default="gpt-4o-mini")
+    ocrModel = Column(String, default="gpt-4o-mini")
+    
     modelPreset1 = Column(String, default="gpt-4o-mini")
     modelPreset2 = Column(String, default="gpt-4o-mini")
+
     enableSummarization = Column(Boolean, default=False)
+    
     createdAt = Column(DateTime, default=datetime.datetime.utcnow)
     updatedAt = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     

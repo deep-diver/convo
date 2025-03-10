@@ -92,7 +92,7 @@ export async function addConversation(userText) {
       await callLLMSummaryBatch(
         session.id,
         session.messages,
-        session.settings.model,
+        session.settings.summarizingModel,
         session.settings.temperature,
         session.settings.maxTokens
       );

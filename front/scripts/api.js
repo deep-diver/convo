@@ -19,6 +19,8 @@ export async function callLLMStream(conversation, signal) {
     return callHuggingFaceStream(session, conversation, model, temperature, maxTokens, signal);
   } else if (model.startsWith("mistral")) {
     return callMistralStream(session, conversation, model, temperature, maxTokens, signal);
+  } else if (model.startsWith("upstage")) {
+    return callUpstageStream(session, conversation, model, temperature, maxTokens, signal);
   } else {
     throw new Error("Unsupported model: " + model);
   }
@@ -193,12 +195,33 @@ export async function callMistralStream(session, conversation, model, temperatur
   return processStream(reader, decoder, session, "Mistral stream");
 }
 
+export async function callUpstageStream(session, conversation, model, temperature, maxTokens, signal) {
+  console.log(`Calling Upstage API with model: ${model}`);
+  
+  const response = await fetch("http://127.0.0.1:8000/upstage_stream", 
+    createRequestOptions(session, { 
+      conversation: conversation,
+      temperature: temperature,
+      max_tokens: maxTokens,
+      model: model,
+    }, signal)
+  );
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  return processStream(reader, decoder, session, "Upstage stream");
+}
+
+
+
 /**
  * Makes a batch request to generate a summary of the conversation
  */
 export async function callLLMSummaryBatch(sessionId, conversation, model, temperature, maxTokens) {
   const loadingOverlay = document.getElementById("loadingOverlay");
+  const loadingOverlayText = document.getElementById("loadingOverlayText");
   loadingOverlay.classList.add("active");
+  loadingOverlayText.innerHTML = "Generating summary by " + model + "...";
 
   // Determine the appropriate endpoint based on the model
   const modelToEndpoint = {

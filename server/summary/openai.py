@@ -31,8 +31,8 @@ async def openai_summary(request: Request):
     print("--------------------------------")
     print(body)
     print()
-    temperature = body.get("temperature", 0.7)
-    max_tokens = body.get("max_tokens", 256)
+    temperature = 1.0#body.get("temperature", 0.7)
+    max_tokens = 8096#body.get("max_tokens", 256)
     model = body.get("model", "gpt-4o-mini")
 
     # Get session ID from the request
@@ -85,7 +85,7 @@ async def openai_summary(request: Request):
     try:
         session = db.query(Session).filter(Session.sessionId == session_id).first()
         if session:
-            session.summary = summary_text
+            session.summary = summary_text.replace("```markdown", "").replace("```md", "").strip()
             db.commit()
     finally:
         db.close()

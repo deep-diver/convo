@@ -28,39 +28,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         const preset1Select = document.getElementById('preset1');
         const preset2Select = document.getElementById('preset2');
         const modelSelect = document.getElementById('modelSelect');
+        const summarizingModelSelect = document.getElementById('summarizingModelSelect');
 
         modelSelect.innerHTML = '';
         preset1Select.innerHTML = '';
         preset2Select.innerHTML = '';
-
+        summarizingModelSelect.innerHTML = '';
         // Add options for each provider's models
         for (const [provider, models] of Object.entries(modelsData)) {
             if (models.length > 0) {
                 const group1 = document.createElement('optgroup');
                 const group2 = document.createElement('optgroup');
                 const group3 = document.createElement('optgroup');
+                const group4 = document.createElement('optgroup');
                 group1.label = provider;
                 group2.label = provider;
                 group3.label = provider;
+                group4.label = provider;
 
                 models.forEach(model => {
                     const option1 = document.createElement('option');
                     const option2 = document.createElement('option');
                     const option3 = document.createElement('option');
+                    const option4 = document.createElement('option');
                     option1.value = model.code;
                     option2.value = model.code;
                     option3.value = model.code;
+                    option4.value = model.code;
                     option1.textContent = model.name;
                     option2.textContent = model.name;
                     option3.textContent = model.name;
+                    option4.textContent = model.name;
                     group1.appendChild(option1);
                     group2.appendChild(option2);
                     group3.appendChild(option3);
+                    group4.appendChild(option4);
                 });
 
                 preset1Select.appendChild(group1);
                 preset2Select.appendChild(group2);
                 modelSelect.appendChild(group3);
+                summarizingModelSelect.appendChild(group4);
             }
         }
     } catch (err) {
@@ -92,12 +100,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             name: s.name,
             title: s.title,
             messages: s.messages,
-            summary: s.summary,
+            summary: s.summary.replace(/^```markdown\n/, ''),
             settings: {
                 temperature: s.temperature,
                 maxTokens: s.maxTokens,
                 persona: s.persona,
                 model: s.model,
+                summarizingModel: s.summarizingModel,
                 modelPreset1: s.modelPreset1,
                 modelPreset2: s.modelPreset2,
                 enableSummarization: s.enableSummarization

@@ -14,17 +14,19 @@ export function setPresets(modelPreset1, modelPreset2) {
 // presets.js
 export function initPresets() {
     const presetContainer = document.getElementById('presetContainer');
+    const helpMessage = document.getElementById('help-message');
     if (!presetContainer) return;
   
     const preset1 = document.getElementById('preset1');
     const preset2 = document.getElementById('preset2');
-    const modelSelect = document.getElementById('modelSelect');
 
     preset1.value = "gpt-4o-mini";
     preset2.value = "gpt-4o-mini";
 
     // Keyboard shortcuts: Ctrl/Cmd + Shift + 1, 2, 3
     document.addEventListener('keydown', (e) => {
+      let selectedPresetIdx = 0;
+
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey) {
         switch (e.key) {
           case '1':
@@ -32,13 +34,46 @@ export function initPresets() {
             preset1.classList.add('active');
             modelSelect.value = preset1.value;
             sessions[currentSessionIndex].settings.model = preset1.value;
+            fetch('http://127.0.0.1:8000/update_session_settings', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Session-ID': sessions[currentSessionIndex].id
+              },
+              body: JSON.stringify({
+                session_settings: sessions[currentSessionIndex].settings
+              })
+            });
+
+            helpMessage.textContent = preset1.value;
+            helpMessage.classList.add('active');
+            setTimeout(() => {
+              helpMessage.classList.remove('active');
+            }, 500);
+
             break;
           case '2':
             preset1.classList.remove('active'); 
             preset2.classList.add('active');
             modelSelect.value = preset2.value;
             sessions[currentSessionIndex].settings.model = preset2.value;
-            break;
+            fetch('http://127.0.0.1:8000/update_session_settings', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Session-ID': sessions[currentSessionIndex].id
+              },
+              body: JSON.stringify({
+                session_settings: sessions[currentSessionIndex].settings
+              })
+            });  
+
+            helpMessage.textContent = preset2.value;
+            helpMessage.classList.add('active');
+            setTimeout(() => {
+              helpMessage.classList.remove('active');
+            }, 500);
+            break;          
         }
       }
     });
@@ -52,7 +87,7 @@ export function initPresets() {
         },
         body: JSON.stringify({
           model_preset1: preset1.value,
-          model_preset2: preset2.value
+          model_preset2: preset2.value,
         })
       }).catch(err => {
         console.error('Error updating model preset:', err);
@@ -68,7 +103,7 @@ export function initPresets() {
         },
         body: JSON.stringify({
           model_preset1: preset1.value,
-          model_preset2: preset2.value
+          model_preset2: preset2.value,
         })
       }).catch(err => {
         console.error('Error updating model preset:', err);

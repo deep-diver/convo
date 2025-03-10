@@ -110,6 +110,14 @@ function check_llama_model(model) {
   return false;
 }
 
+function check_upstage_model(model) {
+  if (model == 'upstage-solar-mini' || 
+      model == 'upstage-solar-pro') {
+    return true;
+  }
+  return false;
+}
+
 export function determineSvgFile(model) {
   if (check_mistral_model(model)) {
     return 'assets/mistral.svg';
@@ -131,6 +139,9 @@ export function determineSvgFile(model) {
   }
   else if (check_llama_model(model)) {
     return 'assets/meta.svg';
+  }
+  else if (check_upstage_model(model)) {
+    return 'assets/upstage.svg';
   }
   return 'assets/mistral.svg';
 }

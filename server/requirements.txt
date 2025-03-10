@@ -11,3 +11,4 @@ openai
 anthropic
 mistralai
 huggingface-hub
+pdf2image

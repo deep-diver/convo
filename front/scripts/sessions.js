@@ -35,7 +35,7 @@ export function renderSessionListFromData(sessions) {
 
     // Create a span for the session name.
     const nameSpan = document.createElement('span');
-    nameSpan.textContent = session.name;
+    nameSpan.textContent = session.title;
     li.appendChild(nameSpan);
 
     // Create the "x" button to remove the session.
@@ -75,7 +75,8 @@ export function renderSessionList() {
   sessions.forEach((session, index) => {
     const li = document.createElement('li');
     const nameSpan = document.createElement('span');
-    nameSpan.textContent = session.name;
+    console.log("session.title", session.title);
+    nameSpan.textContent = session.title;
     li.appendChild(nameSpan);
 
     const removeBtn = document.createElement('button');
@@ -149,6 +150,7 @@ export async function removeSession(index) {
       maxTokens: s.maxTokens,
       persona: s.persona,
       model: s.model,
+      summarizingModel: s.summarizingModel,
       modelPreset1: s.modelPreset1,
       modelPreset2: s.modelPreset2,
       enableSummarization: s.enableSummarization
@@ -166,8 +168,28 @@ export async function removeSession(index) {
 export function renderCurrentSession() {
   const session = sessions[currentSessionIndex];
   const carousel = document.getElementById('carousel');
-  console.log("test", session)
+
   setPresets(session.settings.modelPreset1, session.settings.modelPreset2);
+  const preset1 = document.getElementById('preset1');
+  const preset2 = document.getElementById('preset2');
+  const modelSelect = document.getElementById('modelSelect');
+
+  preset1.value = session.settings.modelPreset1;
+  preset2.value = session.settings.modelPreset2;
+  modelSelect.value = session.settings.model;
+
+  document.getElementById('chatTitle').value = session.title;
+  document.getElementById('summarizingModelSelect').value = session.settings.summarizingModel;  
+
+  preset2.classList.remove('active');
+  preset1.classList.remove('active');
+  // preset1.classList.add('active');
+
+  if (modelSelect.value == preset1.value) {
+    preset1.classList.add('active');
+  } else if (modelSelect.value == preset2.value) {
+    preset2.classList.add('active');
+  }
 
   carousel.innerHTML = "";
   session.messages.forEach(message => {
@@ -183,8 +205,6 @@ export function renderCurrentSession() {
         </div>
       `;
     }
-
-    console.log("message", message);
 
     const svg_file = determineSvgFile(message.model);
     card.innerHTML = `
@@ -204,8 +224,6 @@ export function renderCurrentSession() {
     `;
     carousel.appendChild(card);
     processMessagesInContainer(card);
-
-
   });
   currentCardIndex = session.messages.length > 0 ? session.messages.length - 1 : 0;
   updateCarousel();
@@ -333,6 +351,7 @@ document.getElementById('newSessionBtn').addEventListener('click', () => {
           maxTokens: data.maxTokens,
           persona: data.persona,
           model: data.model,
+          summarizingModel: data.summarizingModel,
           modelPreset1: data.modelPreset1,
           modelPreset2: data.modelPreset2,
           enableSummarization: data.enableSummarization
@@ -345,15 +364,6 @@ document.getElementById('newSessionBtn').addEventListener('click', () => {
 
       renderSessionList();
       renderCurrentSession();
-
-      const preset1 = document.getElementById('preset1');
-      const preset2 = document.getElementById('preset2');
-
-      preset1.value = "gpt-4o-mini";
-      preset2.value = "gpt-4o-mini";
-
-      preset2.classList.remove('active');
-      preset1.classList.remove('active');
     }
   }).catch(err => {
     console.error('Error creating new session:', err);

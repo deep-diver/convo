@@ -129,6 +129,8 @@ downloadCardBtn.addEventListener('click', () => {
       // Clone and append the title (if exists)
       if (title) {
         const clonedTitle = title.cloneNode(true);
+        const turnLabel = clonedTitle.querySelector("#turnLabel");
+        turnLabel.innerHTML = "Turn: " + (index+1) + " / " + cards.length;
         clonedTitle.style.width = title.scrollWidth + 'px';
         wrapper.appendChild(clonedTitle);
       }
@@ -192,11 +194,23 @@ saveSettingsBtn.addEventListener('click', () => {
   sessionSettings.maxTokens = parseInt(maxTokensInput.value);
   sessionSettings.persona = personaSelect.value;
   sessionSettings.model = modelSelect.value;
+  sessionSettings.summarizingModel = summarizingModelSelect.value;
   console.log('Session settings saved:', sessions[currentSessionIndex].settings);
   settingsOverlay.classList.remove('active');
 
   document.getElementById('preset1').classList.remove('active');
   document.getElementById('preset2').classList.remove('active');  
+
+  fetch('http://127.0.0.1:8000/update_session_settings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Session-ID': sessions[currentSessionIndex].id
+    },
+    body: JSON.stringify({
+      session_settings: sessionSettings
+    })
+  });
 });
 const editTitleBtn = document.getElementById('editTitleBtn');
 editTitleBtn.addEventListener('click', () => {
@@ -205,6 +219,17 @@ editTitleBtn.addEventListener('click', () => {
   if (newTitle !== null && newTitle.trim() !== "") {
     sessions[currentSessionIndex].title = newTitle.trim();
     document.getElementById('chatTitle').textContent = newTitle.trim();
+    document.querySelectorAll('#sessionList li span')[currentSessionIndex].innerHTML = newTitle.trim();
+    fetch('http://127.0.0.1:8000/update_title', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-ID': sessions[currentSessionIndex].id
+      },
+      body: JSON.stringify({
+        title: newTitle.trim()
+      })
+    });
   }
 });
 
